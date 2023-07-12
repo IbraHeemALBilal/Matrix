@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Point Rotation</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      width: 400px;
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <label for="x-input">X Coordinate (in cm):</label>
+    <input type="number" id="x-input">
+
+    <label for="y-input">Y Coordinate (in cm):</label>
+    <input type="number" id="y-input">
+
+    <label for="angle-input">Rotation Angle (in degrees):</label>
+    <input type="number" id="angle-input">
+
+    <label for="direction-checkbox">Rotation Direction:</label>
+    <input type="checkbox" id="direction-checkbox" checked>
+
+    <button onclick="drawPoint()">Draw</button>
+  </div>
+
+  <canvas id="myCanvas"></canvas>
+
+  <p id="result"></p>
+
+  <script>
+    function drawPoint() {
+      const canvas = document.getElementById('myCanvas');
+      const ctx = canvas.getContext('2d');
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      const x = Number(document.getElementById('x-input').value) * 10;
+      const y = Number(document.getElementById('y-input').value) * 10;
+      const angle = Number(document.getElementById('angle-input').value);
+      const clockwise = document.getElementById('direction-checkbox').checked;
+
+      ctx.strokeStyle = '#ccc';
+
+      ctx.beginPath();
+      ctx.moveTo(0, canvasHeight / 2);
+      ctx.lineTo(canvasWidth, canvasHeight / 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(canvasWidth / 2, 0);
+      ctx.lineTo(canvasWidth / 2, canvasHeight);
+      ctx.stroke();
+
+      ctx.font = 'bold 14px Arial';
+      ctx.fillStyle = '#000';
+      ctx.fillText('X', canvasWidth - 10, canvasHeight / 2 - 10);
+
+      ctx.fillText('Y', canvasWidth / 2 + 10, 20);
+
+      ctx.fillStyle = 'blue';
+      ctx.beginPath();
+      ctx.arc(canvasWidth / 2 + x, canvasHeight / 2 - y, 5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      const radians = (angle * Math.PI) / 180;
+      const rotationDirection = clockwise ? -1 : 1;
+      const rotatedX = x * Math.cos(rotationDirection * radians) - y * Math.sin(rotationDirection * radians);
+      const rotatedY = x * Math.sin(rotationDirection * radians) + y * Math.cos(rotationDirection * radians);
+
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(canvasWidth / 2 + rotatedX, canvasHeight / 2 - rotatedY, 5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.strokeStyle = 'green';
+      ctx.beginPath();
+      ctx.moveTo(canvasWidth / 2 + x, canvasHeight / 2 - y);
+      ctx.lineTo(canvasWidth / 2 + rotatedX, canvasHeight / 2 - rotatedY);
+      ctx.stroke();
+
+      const result = document.getElementById('result');
+      result.innerHTML = `Rotated Point: (${rotatedX / 10} cm, ${rotatedY / 10} cm)`;
+
+      const additionalInfo = document.createElement('p');
+      additionalInfo.innerHTML = `Ibrahim Alotewi<br>
+                                  AAUP<br>
+                                  `;
+      result.appendChild(additionalInfo);
+    }
+  </script>
+</body>
+</html>
